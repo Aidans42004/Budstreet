@@ -6,100 +6,109 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Bud Street">
-<meta name="theme-color" content="#0a0c0a">
+<meta name="theme-color" content="#070a06">
 <title>Bud Street</title>
-<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Crect width='180' height='180' fill='%230a0c0a'/%3E%3Crect x='30' y='72' width='36' height='78' fill='%232a2f2a'/%3E%3Crect x='72' y='44' width='36' height='106' fill='%233d423d'/%3E%3Crect x='114' y='86' width='36' height='64' fill='%23242924'/%3E%3Cg fill='%233ddc84'%3E%3Crect x='37' y='82' width='8' height='8'/%3E%3Crect x='52' y='82' width='8' height='8'/%3E%3Crect x='37' y='100' width='8' height='8'/%3E%3Crect x='52' y='118' width='8' height='8'/%3E%3Crect x='80' y='56' width='8' height='8'/%3E%3Crect x='94' y='56' width='8' height='8'/%3E%3Crect x='80' y='76' width='8' height='8'/%3E%3Crect x='94' y='96' width='8' height='8'/%3E%3Crect x='80' y='116' width='8' height='8'/%3E%3Crect x='121' y='96' width='8' height='8'/%3E%3Crect x='136' y='114' width='8' height='8'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="leaf.png">
+<link rel="icon" href="leaf.png">
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Rubik+Spray+Paint&display=swap');
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;}
   :root{
-    --bg:#0a0c0a; --bg2:#111511;
-    --panel:#131713; --panel2:#1a1f1a; --edge:#262c26; --edge2:#333a33;
-    --ink:#f2f5f2; --mut:#8f978f; --dim:#5c655c;
-    --green:#3ddc84; --green2:#2aa866; --white:#f2f5f2;
+    --bg:#070a06; --bg2:#0b110a;
+    --panel:#0c130b; --panel2:#111a10; --edge:#274427; --edge2:#355732;
+    --ink:#eef5ea; --mut:#9db894; --dim:#5f7a58;
+    --green:#52d955; --lime:#7ddc4f; --neon:#61e33a; --white:#eef5ea;
   }
   html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--ink);
     font-family:-apple-system,'Segoe UI',system-ui,sans-serif;}
   #app{height:100dvh;display:flex;flex-direction:column;max-width:540px;margin:0 auto;background:var(--bg);position:relative;}
   canvas{display:block;image-rendering:pixelated;}
+  img{-webkit-user-drag:none;}
 
-  header{padding:14px 18px 11px;background:var(--bg2);border-bottom:1px solid var(--edge);
+  header{padding:12px 16px 10px;background:var(--bg2);border-bottom:1px solid var(--edge);
     display:flex;align-items:center;justify-content:space-between;}
-  header h1{font-size:16px;font-weight:700;letter-spacing:.4px;display:flex;align-items:center;gap:8px;}
-  header h1 .dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green);}
-  header .sub{font-size:10px;color:var(--mut);margin-top:2px;letter-spacing:.6px;text-transform:uppercase;}
+  .hl{display:flex;align-items:center;gap:10px;}
+  .hl img{width:34px;height:44px;object-fit:contain;}
+  header h1{font-size:19px;font-weight:800;letter-spacing:.3px;}
+  header h1 .g{color:var(--neon);}
+  header .sub{font-size:10px;color:var(--lime);margin-top:1px;letter-spacing:.4px;}
   header .hr{text-align:right;}
   header .clock{font-size:12px;color:var(--mut);font-variant-numeric:tabular-nums;}
   .mstat{display:inline-flex;align-items:center;gap:5px;font-size:9px;font-weight:700;letter-spacing:.6px;
     color:var(--mut);text-transform:uppercase;margin-top:3px;}
   .mstat i{width:6px;height:6px;border-radius:50%;background:var(--dim);}
-  .mstat.open{color:var(--green);} .mstat.open i{background:var(--green);box-shadow:0 0 6px var(--green);}
+  .mstat.open{color:var(--neon);} .mstat.open i{background:var(--neon);box-shadow:0 0 6px var(--neon);}
 
-  /* ticker tape */
-  .tape{overflow:hidden;background:#060806;border-bottom:1px solid var(--edge);}
+  .tape{overflow:hidden;background:#040604;border-bottom:1px solid var(--edge);}
   .tape-in{display:inline-block;white-space:nowrap;padding:7px 0;font-size:11px;font-weight:600;
     font-variant-numeric:tabular-nums;animation:tape 22s linear infinite;}
   .tape-in span{margin:0 14px;color:var(--mut);}
-  .tape-in b{color:var(--ink);font-weight:700;}
-  .tape-in .g{color:var(--green);} .tape-in .w{color:var(--white);opacity:.85;}
+  .tape-in b{color:var(--ink);}
+  .tape-in .g{color:var(--neon);} .tape-in .w{color:var(--white);opacity:.8;}
   @keyframes tape{from{transform:translateX(0)}to{transform:translateX(-50%)}}
   @media (prefers-reduced-motion: reduce){.tape-in{animation:none;}}
 
   .screen{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;display:none;padding:14px 14px 18px;}
   .screen.active{display:block;}
 
-  .panel{background:var(--panel);border:1px solid var(--edge);border-radius:14px;padding:16px;margin-bottom:14px;}
-  .panel.flush{padding:0;overflow:hidden;}
+  .panel{background:var(--panel);border:1px solid var(--edge);border-radius:16px;padding:16px;margin-bottom:14px;}
+  .panel.flush{padding:0;overflow:hidden;border-color:#2f5230;}
   .phead{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px;}
-  .phead h2{font-size:11px;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;color:var(--mut);}
+  .phead h2{font-family:'Rubik Spray Paint',cursive;font-size:19px;font-weight:400;letter-spacing:1px;
+    color:var(--neon);text-transform:uppercase;display:flex;align-items:center;gap:8px;text-shadow:0 0 14px rgba(97,227,58,.35);}
+  .phead h2 img{width:17px;height:22px;object-fit:contain;}
   .phead .aux{font-size:11px;color:var(--mut);}
 
+  .townwrap{position:relative;line-height:0;}
+  .townwrap img{width:100%;display:block;}
+  #crowd{position:absolute;left:0;bottom:0;width:100%;}
+
   .row{display:flex;gap:9px;align-items:center;}
-  input,select{flex:1;background:var(--bg2);border:1px solid var(--edge2);color:var(--ink);
-    font-family:inherit;font-size:15px;font-weight:600;padding:13px 14px;border-radius:11px;letter-spacing:.4px;
+  input,select{flex:1;background:var(--bg2);border:1px solid var(--edge);color:var(--ink);
+    font-family:inherit;font-size:15px;font-weight:600;padding:13px 14px;border-radius:12px;letter-spacing:.4px;
     appearance:none;-webkit-appearance:none;}
   input::placeholder{color:var(--dim);font-weight:500;}
-  input:focus,select:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(61,220,132,.13);}
+  input:focus,select:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(82,217,85,.14);}
   #tick{text-transform:uppercase;}
 
-  .btn{background:var(--green);color:#04150b;border:none;font-family:inherit;font-weight:700;
-    padding:13px 17px;font-size:13px;border-radius:11px;letter-spacing:.3px;cursor:pointer;white-space:nowrap;
+  .btn{background:var(--green);color:#06210a;border:none;font-family:inherit;font-weight:800;
+    padding:13px 17px;font-size:13px;border-radius:12px;letter-spacing:.3px;cursor:pointer;white-space:nowrap;
     transition:filter .12s,transform .06s;}
   .btn:active{transform:translateY(1px);filter:brightness(.9);}
   .btn.white{background:var(--white);color:#0a0c0a;}
   .btn.wide{width:100%;margin-top:11px;}
-  .btn.ghost{background:transparent;color:var(--mut);border:1px solid var(--edge2);}
-  .btn.sm{padding:9px 13px;font-size:12px;border-radius:9px;}
+  .btn.ghost{background:transparent;color:var(--mut);border:1px solid var(--edge);}
+  .btn.sm{padding:9px 13px;font-size:12px;border-radius:10px;}
 
-  .tag{display:inline-block;background:var(--bg2);border:1px solid var(--edge2);border-radius:8px;
+  .tag{display:inline-block;background:var(--bg2);border:1px solid var(--edge);border-radius:9px;
     padding:6px 11px;margin:6px 6px 0 0;font-size:12px;font-weight:600;color:var(--mut);cursor:pointer;}
   .tag:active{border-color:var(--green);color:var(--ink);}
   .hint{font-size:11px;color:var(--mut);line-height:1.7;margin-top:11px;}
   .hint b{color:var(--ink);font-weight:600;}
 
-  /* stock cards */
-  .stock{background:var(--panel2);border:1px solid var(--edge);border-radius:12px;padding:14px;margin-bottom:11px;}
+  .stock{background:var(--panel2);border:1px solid var(--edge);border-radius:14px;padding:14px;margin-bottom:11px;}
   .stock:last-child{margin-bottom:0;}
   .stop{display:flex;justify-content:space-between;align-items:flex-start;}
-  .tk{font-size:18px;font-weight:700;letter-spacing:.3px;display:flex;align-items:center;gap:8px;}
+  .tk{font-size:18px;font-weight:800;letter-spacing:.3px;display:flex;align-items:center;gap:8px;}
   .price{font-size:13px;color:var(--mut);margin-top:4px;font-variant-numeric:tabular-nums;font-weight:600;}
-  .up{color:var(--green);} .dn{color:var(--white);opacity:.85;}
-  .sig{font-size:11px;font-weight:800;padding:6px 12px;border-radius:8px;letter-spacing:.7px;}
-  .sig.buy{color:#04150b;background:var(--green);}
+  .up{color:var(--neon);} .dn{color:var(--white);opacity:.8;}
+  .sig{font-size:11px;font-weight:800;padding:6px 12px;border-radius:9px;letter-spacing:.7px;}
+  .sig.buy{color:#06210a;background:var(--green);}
   .sig.sell{color:#0a0c0a;background:var(--white);}
-  .sig.hold{color:var(--ink);background:var(--edge2);}
+  .sig.hold{color:var(--ink);background:#2b452b;}
   .chiptag{font-size:9px;font-weight:700;padding:2px 6px;border-radius:5px;letter-spacing:.6px;}
-  .chiptag.live{color:#04150b;background:var(--green);}
-  .chiptag.sim{color:var(--mut);background:var(--bg2);border:1px solid var(--edge2);}
+  .chiptag.live{color:#06210a;background:var(--neon);}
+  .chiptag.sim{color:var(--mut);background:var(--bg2);border:1px solid var(--edge);}
 
   .spark{width:100%;height:30px;margin-top:10px;}
   .ohlc{display:flex;gap:6px;margin-top:10px;}
-  .ohlc div{flex:1;background:var(--bg2);border:1px solid var(--edge);border-radius:8px;padding:6px 4px;text-align:center;}
+  .ohlc div{flex:1;background:var(--bg2);border:1px solid var(--edge);border-radius:9px;padding:6px 4px;text-align:center;}
   .ohlc .k{font-size:8px;color:var(--dim);letter-spacing:.6px;text-transform:uppercase;font-weight:700;}
   .ohlc .v{font-size:11px;font-weight:700;margin-top:2px;font-variant-numeric:tabular-nums;}
   .range{margin-top:10px;}
   .range .rt{display:flex;justify-content:space-between;font-size:9px;color:var(--dim);font-weight:700;margin-bottom:4px;letter-spacing:.4px;}
   .range .track{height:6px;background:var(--bg2);border-radius:4px;position:relative;border:1px solid var(--edge);}
-  .range .mark{position:absolute;top:-3px;width:3px;height:10px;background:var(--green);border-radius:2px;}
+  .range .mark{position:absolute;top:-3px;width:3px;height:10px;background:var(--neon);border-radius:2px;box-shadow:0 0 6px var(--neon);}
 
   .bars{display:flex;gap:7px;margin:12px 0 0;}
   .bar{flex:1;}
@@ -109,65 +118,72 @@
   .bar .num{font-size:11px;margin-top:5px;font-weight:700;font-variant-numeric:tabular-nums;}
   .voices{margin-top:12px;padding-top:12px;border-top:1px solid var(--edge);}
   .voice{font-size:11px;line-height:1.65;color:var(--mut);display:flex;gap:7px;margin-bottom:4px;}
-  .voice b{color:var(--green);font-weight:700;flex:none;}
+  .voice b{color:var(--lime);font-weight:700;flex:none;}
   .voice.chief b{color:var(--white);}
   .cardfoot{display:flex;gap:8px;margin-top:12px;}
   .x{background:none;border:none;color:var(--dim);font-size:15px;padding:4px 6px;cursor:pointer;line-height:1;}
   .x:active{color:var(--white);}
 
   .empty{text-align:center;padding:34px 16px;color:var(--mut);font-size:12px;line-height:1.9;}
-  .empty .big{font-size:30px;margin-bottom:8px;filter:grayscale(1);}
+  .empty img{width:26px;opacity:.6;margin-bottom:8px;}
 
-  /* fund */
   .acct{display:flex;gap:8px;}
-  .acct div{flex:1;background:var(--bg2);border:1px solid var(--edge);border-radius:11px;padding:11px 8px;text-align:center;}
+  .acct div{flex:1;background:var(--bg2);border:1px solid var(--edge);border-radius:12px;padding:11px 8px;text-align:center;}
   .acct .k{font-size:9px;color:var(--dim);letter-spacing:.7px;text-transform:uppercase;font-weight:700;}
   .acct .v{font-size:15px;font-weight:800;margin-top:4px;font-variant-numeric:tabular-nums;}
   .hold{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--edge);}
   .hold:last-child{border-bottom:none;padding-bottom:0;}
-  .hold .l .t{font-size:14px;font-weight:700;}
+  .hold .l .t{font-size:14px;font-weight:800;}
   .hold .l .s{font-size:10px;color:var(--mut);margin-top:2px;font-variant-numeric:tabular-nums;}
   .hold .r{text-align:right;font-variant-numeric:tabular-nums;}
   .hold .r .v{font-size:13px;font-weight:700;}
   .hold .r .p{font-size:11px;font-weight:700;margin-top:2px;}
 
-  .agent{display:flex;gap:12px;align-items:center;padding:11px 0;border-bottom:1px solid var(--edge);}
+  .agent{display:flex;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--edge);position:relative;}
   .agent:last-child{border-bottom:none;padding-bottom:0;}
   .agent:first-child{padding-top:0;}
-  .agent canvas{width:44px;height:44px;flex:none;background:var(--bg2);border-radius:10px;}
-  .agent .nm{font-size:13px;font-weight:700;}
-  .agent .jb{font-size:11px;color:var(--mut);margin-top:2px;line-height:1.55;}
+  .agent .pimg{width:52px;height:60px;object-fit:cover;flex:none;border-radius:12px;border:1px solid var(--edge);}
+  .agent .nm{font-size:14px;font-weight:800;}
+  .agent .jb{font-size:11px;color:var(--mut);margin-top:2px;line-height:1.55;padding-right:34px;}
+  .agent .jb b{color:var(--lime);font-weight:700;}
+  .agent .rowleaf{position:absolute;right:2px;top:50%;transform:translateY(-50%);width:22px;opacity:.85;}
 
-  .stat{display:inline-block;font-size:10px;font-weight:700;padding:3px 9px;border-radius:7px;letter-spacing:.5px;}
-  .stat.live{color:#04150b;background:var(--green);}
-  .stat.sim{color:var(--mut);background:var(--bg2);border:1px solid var(--edge2);}
-  .instbox{background:var(--bg2);border:1px solid var(--edge);border-radius:11px;padding:13px;margin-top:12px;
+  .stat{display:inline-block;font-size:10px;font-weight:700;padding:3px 9px;border-radius:8px;letter-spacing:.5px;}
+  .stat.live{color:#06210a;background:var(--neon);}
+  .stat.sim{color:var(--mut);background:var(--bg2);border:1px solid var(--edge);}
+  .instbox{background:var(--bg2);border:1px solid var(--edge);border-radius:12px;padding:13px;margin-top:12px;
     font-size:11px;color:var(--mut);line-height:1.85;}
   .instbox b{color:var(--ink);}
-  .disc{font-size:10px;color:var(--dim);padding:0 16px 10px;line-height:1.6;text-align:center;}
+  .disc{font-size:10px;color:var(--dim);padding:0 16px 10px;line-height:1.6;text-align:center;
+    display:flex;align-items:center;justify-content:center;gap:7px;}
+  .disc img{width:11px;opacity:.7;}
 
   nav{display:flex;background:var(--bg2);border-top:1px solid var(--edge);padding-bottom:env(safe-area-inset-bottom);}
-  nav button{flex:1;background:none;border:none;color:var(--dim);font-family:inherit;font-weight:600;
-    padding:10px 2px 12px;font-size:9px;letter-spacing:.4px;position:relative;transition:color .15s;}
-  nav button.on{color:var(--green);}
+  nav button{flex:1;background:none;border:none;color:var(--dim);font-family:inherit;font-weight:700;
+    padding:9px 2px 11px;font-size:10px;letter-spacing:.4px;position:relative;transition:color .15s;}
+  nav button.on{color:var(--neon);}
   nav button.on::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);
-    width:24px;height:3px;border-radius:0 0 3px 3px;background:var(--green);}
-  nav .ico{font-size:19px;display:block;margin-bottom:3px;filter:grayscale(1) brightness(1.4);}
-  nav button.on .ico{filter:none;}
+    width:24px;height:3px;border-radius:0 0 3px 3px;background:var(--neon);}
+  nav button img,nav button canvas{height:26px;display:block;margin:0 auto 3px;object-fit:contain;
+    filter:grayscale(.35) brightness(.8);transition:filter .15s;}
+  nav button.on img,nav button.on canvas{filter:none;}
 
-  .toast{position:absolute;bottom:82px;left:50%;transform:translateX(-50%);background:#060806;
-    border:1px solid var(--green);color:var(--ink);padding:11px 17px;border-radius:11px;font-size:12px;
+  .toast{position:absolute;bottom:84px;left:50%;transform:translateX(-50%);background:#040604;
+    border:1px solid var(--neon);color:var(--ink);padding:11px 17px;border-radius:12px;font-size:12px;
     font-weight:600;z-index:50;opacity:0;transition:opacity .2s,transform .2s;pointer-events:none;white-space:nowrap;
-    box-shadow:0 6px 24px rgba(0,0,0,.5);}
+    box-shadow:0 6px 24px rgba(0,0,0,.55);}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(-4px);}
 </style>
 </head>
 <body>
 <div id="app">
   <header>
-    <div>
-      <h1><span class="dot"></span> Bud Street</h1>
-      <div class="sub">agent trading commune</div>
+    <div class="hl">
+      <img src="leaf.png" alt="">
+      <div>
+        <h1>Bud <span class="g">Street</span></h1>
+        <div class="sub">agent trading commune</div>
+      </div>
     </div>
     <div class="hr">
       <div class="clock" id="clock"></div>
@@ -179,24 +195,29 @@
 
   <!-- TOWN -->
   <div class="screen active" id="s-town">
-    <div class="panel flush"><canvas id="town"></canvas></div>
+    <div class="panel flush">
+      <div class="townwrap">
+        <img src="town.png" alt="Bud Street at night">
+        <canvas id="crowd"></canvas>
+      </div>
+    </div>
     <div class="panel">
-      <div class="phead"><h2>The Commune</h2><span class="aux">5 agents</span></div>
+      <div class="phead"><h2><img src="leaf.png" alt="">The Commune</h2><span class="aux">5 agents</span></div>
       <div id="agentlist"></div>
     </div>
     <div class="panel">
-      <div class="phead"><h2>How it works</h2></div>
+      <div class="phead"><h2><img src="leaf.png" alt="">How it works</h2></div>
       <div class="hint" style="margin-top:0">Five agents live on Bud Street, each working a different building.
-        Add a ticker on the <b>Watch</b> tab and they score it four ways, then vote a signal. Paste a free key
-        on the <b>Key</b> tab and everything runs on real market data. Practice with the <b>Fund</b> tab —
-        $10,000 of play money, traded at real prices, so you can test your instincts with zero risk.</div>
+        Add a ticker on the <b>Watch</b> tab and they score it four ways, then the commune votes a signal.
+        Paste a free key on the <b>Key</b> tab and everything runs on real market data. Practice on the
+        <b>Fund</b> tab — $10,000 of play money traded at real prices, zero risk.</div>
     </div>
   </div>
 
   <!-- WATCH -->
   <div class="screen" id="s-watch">
     <div class="panel">
-      <div class="phead"><h2>Track a stock</h2></div>
+      <div class="phead"><h2><img src="leaf.png" alt="">Track a stock</h2></div>
       <div class="row">
         <input id="tick" placeholder="e.g. AAPL" maxlength="6">
         <button class="btn" onclick="addStock()">Watch</button>
@@ -211,7 +232,7 @@
       </div>
     </div>
     <div class="panel">
-      <div class="phead"><h2>Watchlist</h2><span class="aux" id="wcount"></span></div>
+      <div class="phead"><h2><img src="leaf.png" alt="">Watchlist</h2><span class="aux" id="wcount"></span></div>
       <div id="list"></div>
     </div>
   </div>
@@ -219,7 +240,7 @@
   <!-- FUND -->
   <div class="screen" id="s-fund">
     <div class="panel">
-      <div class="phead"><h2>Paper fund</h2><span class="aux">play money · real prices</span></div>
+      <div class="phead"><h2><img src="leaf.png" alt="">Paper fund</h2><span class="aux">play money · real prices</span></div>
       <div class="acct">
         <div><div class="k">Cash</div><div class="v" id="fcash">—</div></div>
         <div><div class="k">Holdings</div><div class="v" id="fheld">—</div></div>
@@ -228,7 +249,7 @@
       <div class="hint" id="fret"></div>
     </div>
     <div class="panel">
-      <div class="phead"><h2>Trade</h2><span class="aux" id="tprice"></span></div>
+      <div class="phead"><h2><img src="leaf.png" alt="">Trade</h2><span class="aux" id="tprice"></span></div>
       <div class="row">
         <select id="tsel" onchange="fundPrice()"></select>
         <input id="tqty" type="number" inputmode="numeric" placeholder="Qty" min="1" style="max-width:90px">
@@ -240,7 +261,7 @@
       <div class="hint">Fills at the current price — live if your key is set, simulated otherwise.</div>
     </div>
     <div class="panel">
-      <div class="phead"><h2>Holdings</h2></div>
+      <div class="phead"><h2><img src="leaf.png" alt="">Holdings</h2></div>
       <div id="holds"></div>
       <button class="btn ghost wide" onclick="resetFund()">Reset fund to $10,000</button>
     </div>
@@ -249,7 +270,7 @@
   <!-- KEY -->
   <div class="screen" id="s-set">
     <div class="panel">
-      <div class="phead"><h2>Live prices</h2><span id="statPill" class="stat sim">Simulated</span></div>
+      <div class="phead"><h2><img src="leaf.png" alt="">Live prices</h2><span id="statPill" class="stat sim">Simulated</span></div>
       <div class="hint" style="margin-top:0;margin-bottom:12px">Paste a free Finnhub key to run the whole
         ecosystem on real market data. The key is saved only on this device and only ever sent to Finnhub.</div>
       <div class="row">
@@ -265,15 +286,15 @@
         Free tier: 60 checks/min, real-time US stocks. Plenty for this app.
       </div>
       <div class="hint">With a key: real prices, today's change, day range, volatility, and real analyst
-        buy/hold/sell ratings feed the agents. Still not financial advice — real numbers in, but no model can
-        promise what a stock will do next.</div>
+        buy/hold/sell ratings feed the agents. Still not financial advice — no model can promise what a stock
+        will do next.</div>
     </div>
   </div>
 
   <!-- INSTALL -->
   <div class="screen" id="s-info">
     <div class="panel">
-      <div class="phead"><h2>Add to home screen</h2></div>
+      <div class="phead"><h2><img src="leaf.png" alt="">Add to home screen</h2></div>
       <div class="instbox">
         <b>iPhone / iPad (Safari)</b><br>
         1. Open your app link in Safari<br>2. Tap Share ⬆️ → "Add to Home Screen"<br>3. Tap "Add".
@@ -286,21 +307,21 @@
         fund and key are saved on the device.</div>
     </div>
     <div class="panel">
-      <div class="phead"><h2>What runs where</h2></div>
+      <div class="phead"><h2><img src="leaf.png" alt="">What runs where</h2></div>
       <div class="hint" style="margin-top:0"><b>On your phone:</b> the town, the agents, the fund, your
         watchlist, all scoring math.<br><b>From the internet (free):</b> live prices and analyst ratings via
-        your Finnhub key.<br><b>Nowhere:</b> nothing is uploaded, tracked, or billed. Total running cost: $0.</div>
+        your Finnhub key.<br><b>Nowhere:</b> nothing uploaded, tracked, or billed. Running cost: $0.</div>
     </div>
   </div>
 
-  <div class="disc">Bud Street is a game. The fund uses play money. Signals are a simple model — not financial advice.</div>
+  <div class="disc"><img src="leaf.png" alt="">Bud Street is a game. The fund uses play money. Signals are a simple model — not financial advice.<img src="leaf.png" alt=""></div>
 
   <nav>
-    <button class="on" data-s="town" onclick="go('town')"><span class="ico">🏙️</span>Town</button>
-    <button data-s="watch" onclick="go('watch')"><span class="ico">📊</span>Watch</button>
-    <button data-s="fund" onclick="go('fund')"><span class="ico">💼</span>Fund</button>
-    <button data-s="set" onclick="go('set')"><span class="ico">🔑</span>Key</button>
-    <button data-s="info" onclick="go('info')"><span class="ico">⬇️</span>Install</button>
+    <button class="on" data-s="town" onclick="go('town')"><img src="n1.png" alt="">Town</button>
+    <button data-s="watch" onclick="go('watch')"><img src="n2.png" alt="">Watch</button>
+    <button data-s="fund" onclick="go('fund')"><canvas id="fundico" width="18" height="18"></canvas>Fund</button>
+    <button data-s="set" onclick="go('set')"><img src="n3.png" alt="">Key</button>
+    <button data-s="info" onclick="go('info')"><img src="n4.png" alt="">Install</button>
   </nav>
   <div class="toast" id="toast"></div>
 </div>
@@ -410,6 +431,12 @@ const LINES={
   risk:t=>t.risk>60?'downside looks calm':t.risk<40?'this one is jumpy, size small':'moderate risk, stay sharp',
 };
 const curPrice=tk=>live[tk]?live[tk].price:priceOf(tk);
+function liqLine(tk){
+  const p=curPrice(tk);
+  if(live[tk])return p>=100?'deep book here, trades slide right through':p<10?'thin territory, mind the spread':'cash is flowing fine on this one';
+  const s=seed(tk)%3;
+  return ['cash is flowing fine on this one','fills feel a little sticky, go easy','plenty of action, smooth trading'][s];
+}
 
 /* ================= navigation ================= */
 function go(s){
@@ -440,7 +467,7 @@ function toFund(tk){go('fund');document.getElementById('tsel').value=tk;fundPric
 function renderList(){
   const box=document.getElementById('list');if(!box)return;
   const wc=document.getElementById('wcount');if(wc)wc.textContent=stocks.length?stocks.length+' tracked':'';
-  if(!stocks.length){box.innerHTML='<div class="empty"><div class="big">🌱</div>No stocks yet.<br>Add a ticker to wake the commune.</div>';return;}
+  if(!stocks.length){box.innerHTML='<div class="empty"><img src="leaf.png"><br>No stocks yet.<br>Add a ticker to wake the commune.</div>';return;}
   box.innerHTML=stocks.map(tk=>{
     const isLive=!!live[tk];
     const ls=isLive?liveScores(tk):null;
@@ -450,7 +477,7 @@ function renderList(){
     const pr=curPrice(tk);
     const chg=isLive?live[tk].chg:(Math.sin(Date.now()/500000+seed(tk))*3.2);
     const chip=isLive?'<span class="chiptag live">LIVE</span>':'<span class="chiptag sim">SIM</span>';
-    const bar=(l,v)=>`<div class="bar"><div class="lbl">${l}</div><div class="track"><div class="fill" style="width:${v}%;background:${v>60?'var(--green)':v<40?'var(--white)':'var(--dim)'}"></div></div><div class="num">${v}</div></div>`;
+    const bar=(l,v)=>`<div class="bar"><div class="lbl">${l}</div><div class="track"><div class="fill" style="width:${v}%;background:${v>60?'var(--neon)':v<40?'var(--white)':'var(--dim)'}"></div></div><div class="num">${v}</div></div>`;
     const q=live[tk];
     const lo=q?q.l:pr*0.97, hi=q?q.h:pr*1.03;
     const pos=Math.max(0,Math.min(100,(pr-lo)/((hi-lo)||1)*100));
@@ -466,9 +493,9 @@ function renderList(){
       value:`trading in the ${ls.rangePos>66?'top':ls.rangePos<34?'bottom':'middle'} of today's range`,
       risk:`day's swing is ${ls.vol.toFixed(1)}% of price — ${sc.risk>60?'calm':sc.risk<40?'jumpy':'moderate'}`,
     }:{momentum:LINES.momentum(sc),sentiment:LINES.sentiment(sc),value:LINES.value(sc),risk:LINES.risk(sc)};
-    const gus=ls
-      ?(ls.rc?`weighing today's real numbers, the commune says <b style="color:var(--white)">${sig.t}</b>.`:`real prices, partial data — commune says <b style="color:var(--white)">${sig.t}</b>.`)
-      :`the commune says <b style="color:var(--white)">${sig.t}</b> for now.`;
+    const verdict=ls
+      ?(ls.rc?`weighing today's real numbers, the commune votes <b style="color:var(--white)">${sig.t}</b>.`:`real prices, partial data — the commune votes <b style="color:var(--white)">${sig.t}</b>.`)
+      :`the commune votes <b style="color:var(--white)">${sig.t}</b> for now.`;
     return `<div class="stock">
       <div class="stop">
         <div><div class="tk">${tk} ${chip}</div><div class="price">${money(pr)} <span class="${chg>=0?'up':'dn'}">${chg>=0?'▲':'▼'} ${Math.abs(chg).toFixed(2)}%</span></div></div>
@@ -484,7 +511,8 @@ function renderList(){
         <div class="voice"><b>Sunny</b><span>${vc.sentiment}</span></div>
         <div class="voice"><b>Root</b><span>${vc.value}</span></div>
         <div class="voice"><b>Sky</b><span>${vc.risk}</span></div>
-        <div class="voice chief"><b>Gus</b><span>${gus}</span></div>
+        <div class="voice"><b>Greenie</b><span>${liqLine(tk)}</span></div>
+        <div class="voice chief"><b>Verdict</b><span>${verdict}</span></div>
       </div>
       <div class="cardfoot"><button class="btn sm ghost" style="flex:1" onclick="toFund('${tk}')">Trade in paper fund →</button></div>
     </div>`;
@@ -504,10 +532,10 @@ function drawSparks(){
       i?c.lineTo(x,y):c.moveTo(x,y);
     });
     const upTrend=data[data.length-1]>=data[0];
-    c.strokeStyle=upTrend?'#3ddc84':'#8f978f';
+    c.strokeStyle=upTrend?'#61e33a':'#9db894';
     c.lineWidth=1.6;c.stroke();
-    const lx=(data.length-1)/(data.length-1)*(W-4)+2, ly=H-3-((data[data.length-1]-mn)/sp)*(H-8);
-    c.fillStyle=upTrend?'#3ddc84':'#f2f5f2';c.fillRect(lx-2,ly-2,4,4);
+    const ly=H-3-((data[data.length-1]-mn)/sp)*(H-8);
+    c.fillStyle=upTrend?'#61e33a':'#eef5ea';c.fillRect(W-4,ly-2,4,4);
   });
 }
 
@@ -546,7 +574,7 @@ function renderFund(){
   document.getElementById('fret').innerHTML=`All-time: <b class="${ret>=0?'up':'dn'}">${ret>=0?'▲':'▼'} ${money(Math.abs(ret))} (${(ret/100).toFixed(2)}%)</b> since the fund opened with $10,000.`;
   const hb=document.getElementById('holds');
   const keys=Object.keys(port.hold);
-  if(!keys.length){hb.innerHTML='<div class="empty"><div class="big">💼</div>No positions yet.<br>Buy your first shares above.</div>';return;}
+  if(!keys.length){hb.innerHTML='<div class="empty"><img src="leaf.png"><br>No positions yet.<br>Buy your first shares above.</div>';return;}
   hb.innerHTML=keys.map(tk=>{
     const h=port.hold[tk],p=curPrice(tk),v=h.sh*p,pl=(p-h.avg)*h.sh;
     return `<div class="hold">
@@ -583,116 +611,80 @@ function resetFund(){
   }
 }
 
-/* ================= agents & roster ================= */
+/* ================= agents ================= */
 const AGENTS=[
-  {nm:'Willow',job:'Momentum — tracks how hard the price is actually moving today.',c:'#3ddc84'},
-  {nm:'Sunny',job:'Sentiment — reads real analyst buy/hold/sell ratings when live.',c:'#c8cec8'},
-  {nm:'Root',job:'Value — watches where the price sits in the day\'s range.',c:'#8f978f'},
-  {nm:'Sky',job:'Risk — measures today\'s volatility so nobody gets burned.',c:'#2aa866'},
-  {nm:'Gus',job:'Chief — weighs all four and calls Buy, Hold or Sell.',c:'#f2f5f2'},
+  {nm:'Willow',role:'Momentum',job:'rides the trend and watches the charts climb.',img:'a1.png'},
+  {nm:'Sunny',role:'Sentiment',job:'reads the crowd mood and the vibes.',img:'a2.png'},
+  {nm:'Root',role:'Value',job:'digs for what a stock is really worth.',img:'a3.png'},
+  {nm:'Sky',role:'Risk',job:'keeps the commune from getting burned.',img:'a4.png'},
+  {nm:'Greenie',role:'Liquidity',job:'keeps the cash flowing and the trades smooth.',img:'a5.png'},
 ];
-function drawPerson(cx,color){
-  cx.imageSmoothingEnabled=false;
-  const P=(x,y,w,h,c)=>{cx.fillStyle=c;cx.fillRect(x,y,w,h);};
-  P(4,2,6,2,'#5c655c');
-  P(4,3,6,4,'#c8cec8');
-  P(5,4,1,1,'#0a0c0a');P(8,4,1,1,'#0a0c0a');
-  P(3,7,8,5,color);
-  P(5,7,1,5,'rgba(255,255,255,.15)');
-  P(2,7,1,4,color);P(11,7,1,4,color);
-  P(2,10,1,1,'#c8cec8');P(11,10,1,1,'#c8cec8');
-  P(4,12,2,2,'#333a33');P(8,12,2,2,'#333a33');
-}
 function renderAgents(){
-  const box=document.getElementById('agentlist');
-  box.innerHTML=AGENTS.map((a,i)=>`<div class="agent">
-    <canvas id="ac${i}" width="14" height="14"></canvas>
-    <div><div class="nm">${a.nm}</div><div class="jb">${a.job}</div></div>
+  document.getElementById('agentlist').innerHTML=AGENTS.map(a=>`<div class="agent">
+    <img class="pimg" src="${a.img}" alt="${a.nm}">
+    <div><div class="nm">${a.nm}</div><div class="jb"><b>${a.role}</b> — ${a.job}</div></div>
+    <img class="rowleaf" src="leaf.png" alt="">
   </div>`).join('');
-  AGENTS.forEach((a,i)=>drawPerson(document.getElementById('ac'+i).getContext('2d'),a.c));
 }
 
-/* ================= town scene ================= */
-const tcv=document.getElementById('town');
-const tx=tcv.getContext('2d');
-const W=180,H=150,GROUND=118;
-tcv.width=W;tcv.height=H;
+/* ================= living town (walkers over your art) ================= */
+const crowd=document.getElementById('crowd');
+const cc=crowd.getContext('2d');
+const CW=200,CH=42;
+crowd.width=CW;crowd.height=CH;
 function fitTown(){
-  const w=Math.min(540,document.getElementById('app').clientWidth)-28;
-  tcv.style.width=w+'px';tcv.style.height=Math.round(w*H/W)+'px';
+  const img=document.querySelector('.townwrap img');
+  const w=img.clientWidth||360;
+  crowd.style.width=w+'px';
+  crowd.style.height=Math.round(w*CH/CW)+'px';
 }
-function px(x,y,w,h,c){tx.fillStyle=c;tx.fillRect(x,y,w,h);}
-const BUILDINGS=[
-  {x:8,w:30,h:58,c:'#242924',roof:'#1a1e1a',cols:2,rows:3},
-  {x:42,w:26,h:84,c:'#333a33',roof:'#262c26',cols:2,rows:4},
-  {x:72,w:34,h:70,c:'#2a302a',roof:'#1f241f',cols:3,rows:3},
-  {x:110,w:24,h:46,c:'#3d443d',roof:'#2e342e',cols:2,rows:2},
-  {x:138,w:34,h:64,c:'#2e342e',roof:'#232823',cols:3,rows:3},
-];
-let T=0;
-function building(b){
-  const top=GROUND-b.h;
-  px(b.x,top,b.w,b.h,b.c);
-  px(b.x,top,b.w,4,b.roof);
-  px(b.x,top,2,b.h,'rgba(255,255,255,.05)');
-  px(b.x+b.w-2,top,2,b.h,'rgba(0,0,0,.3)');
-  const pad=5,gx=(b.w-pad*2)/b.cols,gy=(b.h-14)/b.rows;
-  for(let r=0;r<b.rows;r++)for(let c=0;c<b.cols;c++){
-    const wx=Math.round(b.x+pad+c*gx),wy=Math.round(top+8+r*gy);
-    const lit=((seed(b.x+''+r+c)+Math.floor(T/3))%5)!==0;
-    px(wx,wy,4,5,lit?'#3ddc84':'#161a16');
-    if(lit)px(wx,wy,4,1,'#7deca9');
-  }
-  px(b.x+b.w/2-3,GROUND-9,6,9,'#0e110e');
+const PCOLORS=['#4a8ab5','#c9a03a','#7a5aa0','#3f9e5a','#b56a4a','#8f978f','#5aa0c9'];
+const walkers=[];
+for(let i=0;i<6;i++){
+  walkers.push({c:PCOLORS[i],hat:i%2===0?'#3f7a3f':null,x:Math.random()*CW,y:26+(i%3)*5,
+    dir:Math.random()<.5?1:-1,sp:.12+Math.random()*.16,ph:Math.random()*6,pause:0});
 }
-const people=[];
-for(let i=0;i<7;i++){
-  const cols=['#3ddc84','#8f978f','#c8cec8','#2aa866','#5c655c','#f2f5f2','#3ddc84'];
-  people.push({c:cols[i],x:Math.random()*W,y:GROUND+6+(i%3)*6,dir:Math.random()<.5?1:-1,sp:.16+Math.random()*.22,ph:Math.random()*6,pause:0});
-}
-function person(p){
+function walker(p,T){
   const x=Math.round(p.x),y=Math.round(p.y);
-  const step=Math.sin(T*6+p.ph)>0?1:0;
-  px(x+1,y-9,4,2,'#5c655c');
-  px(x+1,y-7,4,3,'#c8cec8');
-  px(x,y-4,6,4,p.c);
-  px(x-1,y-4,1,3,p.c);px(x+6,y-4,1,3,p.c);
-  if(p.pause>0||step){px(x+1,y,2,2,'#333a33');px(x+4,y,1,2,'#333a33');}
-  else{px(x+1,y,1,2,'#333a33');px(x+3,y,2,2,'#333a33');}
-  px(x,y+2,6,1,'rgba(0,0,0,.35)');
+  cc.fillStyle='rgba(0,0,0,.4)';cc.fillRect(x,y+2,6,1);
+  if(p.hat){cc.fillStyle=p.hat;cc.fillRect(x+1,y-10,4,2);}
+  cc.fillStyle='#5c4a38';cc.fillRect(x+1,y-9+(p.hat?1:0),4,1);
+  cc.fillStyle='#e8c49a';cc.fillRect(x+1,y-8,4,3);
+  cc.fillStyle=p.c;cc.fillRect(x,y-5,6,5);
+  cc.fillRect(x-1,y-5,1,3);cc.fillRect(x+6,y-5,1,3);
+  const step=Math.sin(T*6+p.ph)>0;
+  cc.fillStyle='#2a2a2a';
+  if(p.pause>0||step){cc.fillRect(x+1,y,2,2);cc.fillRect(x+4,y,1,2);}
+  else{cc.fillRect(x+1,y,1,2);cc.fillRect(x+3,y,2,2);}
 }
-function drawTown(ts){
-  T=ts/1000;
-  const g=tx.createLinearGradient(0,0,0,GROUND);
-  g.addColorStop(0,'#050705');g.addColorStop(1,'#10140f');
-  tx.fillStyle=g;tx.fillRect(0,0,W,GROUND);
-  for(let i=0;i<16;i++){const sx=(i*37)%W,sy=(i*19)%58;
-    tx.fillStyle=((Math.floor(T*2)+i)%7===0)?'#f2f5f2':'rgba(242,245,242,.35)';tx.fillRect(sx,sy,1,1);}
-  px(150,14,12,12,'#f2f5f2');px(153,14,9,12,'#050705');px(150,14,10,3,'#f2f5f2');px(150,23,10,3,'#f2f5f2');
-  tx.fillStyle='#141814';
-  for(let i=0;i<W;i+=16){const hh=14+((seed(''+i)>>3)%22);tx.fillRect(i,GROUND-hh-6,14,hh);}
-  BUILDINGS.forEach(building);
-  px(0,GROUND,W,H-GROUND,'#151915');
-  px(0,GROUND,W,2,'#262c26');
-  [30,100,160].forEach(lx=>{
-    px(lx,GROUND-16,2,16,'#333a33');px(lx-2,GROUND-18,6,3,'#3ddc84');
-    tx.fillStyle='rgba(61,220,132,.06)';tx.fillRect(lx-6,GROUND-15,14,15);
-  });
-  for(let i=0;i<W;i+=14)px(i+5,GROUND+13,7,1,'rgba(242,245,242,.05)');
-  px(2,GROUND-24,3,24,'#333a33');px(0,GROUND-28,26,8,'#0e110e');
-  tx.strokeStyle='#3ddc84';tx.lineWidth=1;tx.strokeRect(0.5,GROUND-27.5,25,7);
-  tx.fillStyle='#3ddc84';tx.font='5px monospace';tx.fillText('BUD ST',3,GROUND-22);
-  people.forEach(p=>{
-    if(p.pause>0){p.pause-=1/60;}
-    else{
-      p.x+=p.dir*p.sp;
-      if(Math.random()<0.001)p.pause=1.5+Math.random()*2;
-      if(p.x<2)p.dir=1;if(p.x>W-6)p.dir=-1;
+const reduceMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+function drawCrowd(ts){
+  const T=ts/1000;
+  cc.clearRect(0,0,CW,CH);
+  walkers.forEach(p=>{
+    if(!reduceMotion){
+      if(p.pause>0){p.pause-=1/60;}
+      else{
+        p.x+=p.dir*p.sp;
+        if(Math.random()<0.0012)p.pause=1.5+Math.random()*2;
+        if(p.x<2)p.dir=1;if(p.x>CW-7)p.dir=-1;
+      }
     }
-    person(p);
+    walker(p,T);
   });
-  requestAnimationFrame(drawTown);
+  if(!reduceMotion)requestAnimationFrame(drawCrowd);
 }
+
+/* ================= fund nav icon ================= */
+(function(){
+  const c=document.getElementById('fundico').getContext('2d');
+  c.imageSmoothingEnabled=false;
+  const G='#52b83a';
+  const P=(x,y,w,h,col)=>{c.fillStyle=col;c.fillRect(x,y,w,h);};
+  P(7,2,4,2,G);P(6,4,6,1,'#2a5a20');
+  P(5,5,8,3,G);P(4,7,10,7,G);P(5,14,8,1,G);
+  P(8,7,2,5,'#0b110a');P(6,9,6,1,'#0b110a');
+})();
 
 /* ================= clocks ================= */
 function tick(){
@@ -717,7 +709,8 @@ if(apiKey)refreshLive();
 renderAgents();renderList();renderTape();
 fitTown();
 window.addEventListener('resize',fitTown);
-requestAnimationFrame(drawTown);
+document.querySelector('.townwrap img').addEventListener('load',fitTown);
+requestAnimationFrame(drawCrowd);
 </script>
 </body>
 </html>
