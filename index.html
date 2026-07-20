@@ -195,8 +195,9 @@
         3. Paste it above and tap Save<br>
         Free tier: 60 checks/min, real-time US stocks.
       </div>
-      <div class="hint">Even live, the agents' scores stay simulated — the free tier gives price and daily
-        change, not those signals. So the Buy/Hold/Sell call is still a game.</div>
+      <div class="hint">With a key, prices <b>and</b> agent scores use real market data: today's change, day
+        range, volatility, and analyst buy/hold/sell ratings. Still a game — real numbers, but not financial
+        advice or a promise about what a stock will do.</div>
     </div>
   </div>
 
@@ -269,8 +270,40 @@ async function fetchQuote(tk){
   try{
     const r=await fetch(`https://finnhub.io/api/v1/quote?symbol=${tk}&token=${apiKey}`);
     const d=await r.json();
-    if(d && typeof d.c==='number' && d.c>0){ live[tk]={price:d.c,chg:d.dp||0}; renderList(); }
+    if(d && typeof d.c==='number' && d.c>0){
+      live[tk]={price:d.c,chg:d.dp||0,h:d.h,l:d.l,o:d.o,pc:d.pc};
+      renderList();
+    }
   }catch(e){}
+  fetchRecs(tk);
+}
+const recs={};
+async function fetchRecs(tk){
+  if(!apiKey || recs[tk]!==undefined) return;
+  recs[tk]=null; // mark as requested
+  try{
+    const r=await fetch(`https://finnhub.io/api/v1/stock/recommendation?symbol=${tk}&token=${apiKey}`);
+    const d=await r.json();
+    if(Array.isArray(d)&&d.length){
+      const m=d[0]; // latest month
+      const bull=(m.strongBuy||0)+(m.buy||0), bear=(m.sell||0)+(m.strongSell||0), hold=m.hold||0;
+      const total=bull+bear+hold;
+      if(total>0){ recs[tk]={bull,bear,hold,total}; renderList(); }
+    }
+  }catch(e){}
+}
+const clamp=(v)=>Math.max(3,Math.min(97,Math.round(v)));
+function liveScores(tk){
+  const q=live[tk]; if(!q) return null;
+  const range=(q.h-q.l)||0.0001;
+  const momentum=clamp(50+(q.chg||0)*8);
+  const rangePos=clamp((q.price-q.l)/range*100);
+  const vol=range/(q.pc||q.price)*100;             // day range as % of prev close
+  const safety=clamp(100-vol*12);
+  let sentiment=null;
+  const rc=recs[tk];
+  if(rc) sentiment=clamp((rc.bull*2+rc.hold*0.7)/(rc.total*2)*100);
+  return {momentum, value:clamp(100-rangePos), risk:safety, sentiment, rangePos, vol, rc};
 }
 function refreshLive(){ if(apiKey) stocks.forEach(fetchQuote); }
 
@@ -330,12 +363,26 @@ function renderList(){
   const wc=document.getElementById('wcount'); if(wc) wc.textContent=stocks.length?stocks.length+' tracked':'';
   if(!stocks.length){box.innerHTML='<div class="empty"><div class="big">🌱</div>No stocks yet.<br>Add a ticker to wake the commune.</div>';return;}
   box.innerHTML=stocks.map(tk=>{
-    const sc=scores(tk), sig=signal(sc);
     const isLive=!!live[tk];
+    const ls=isLive?liveScores(tk):null;
+    const sim=scores(tk);
+    const sc=ls?{momentum:ls.momentum,sentiment:(ls.sentiment??sim.sentiment),value:ls.value,risk:ls.risk}:sim;
+    const sig=signal(sc);
     const pr=isLive?live[tk].price:priceOf(tk);
     const chg=isLive?live[tk].chg:(Math.sin(Date.now()/500000+seed(tk))*3.2);
     const chip=isLive?'<span class="chiptag live">LIVE</span>':'<span class="chiptag sim">SIM</span>';
     const bar=(l,v)=>`<div class="bar"><div class="lbl">${l}</div><div class="track"><div class="fill" style="width:${v}%;background:${v>60?'var(--up)':v<40?'var(--down)':'var(--amber)'}"></div></div><div class="num">${v}</div></div>`;
+    const vc = ls ? {
+      momentum:`${chg>=0?'up':'down'} ${Math.abs(chg).toFixed(2)}% today — ${sc.momentum>60?'real strength':sc.momentum<40?'real weakness':'quiet day'}`,
+      sentiment: ls.rc?`${ls.rc.bull} of ${ls.rc.total} analysts bullish, ${ls.rc.bear} bearish`:'analyst data not available (score simulated)',
+      value:`trading in the ${ls.rangePos>66?'top':ls.rangePos<34?'bottom':'middle'} of today's range`,
+      risk:`day's swing is ${ls.vol.toFixed(1)}% of price — ${sc.risk>60?'calm':sc.risk<40?'jumpy':'moderate'}`,
+    } : {
+      momentum:LINES.momentum(sc), sentiment:LINES.sentiment(sc), value:LINES.value(sc), risk:LINES.risk(sc),
+    };
+    const gus = ls
+      ? (ls.rc?`weighing today's real numbers, the commune says <b style="color:var(--amber)">${sig.t}</b>.`:`real prices, partial data — commune says <b style="color:var(--amber)">${sig.t}</b>.`)
+      : `the commune says <b style="color:var(--amber)">${sig.t}</b> for now.`;
     return `<div class="stock">
       <div class="stop">
         <div><div class="tk">${tk} ${chip}</div><div class="price">$${pr.toFixed(2)} <span class="${chg>=0?'up':'down'}">${chg>=0?'▲':'▼'} ${Math.abs(chg).toFixed(2)}%</span></div></div>
@@ -343,11 +390,11 @@ function renderList(){
       </div>
       <div class="bars">${bar('Mom',sc.momentum)}${bar('Sent',sc.sentiment)}${bar('Value',sc.value)}${bar('Safe',sc.risk)}</div>
       <div class="voices">
-        <div class="voice"><b>Willow</b><span>${LINES.momentum(sc)}</span></div>
-        <div class="voice"><b>Sunny</b><span>${LINES.sentiment(sc)}</span></div>
-        <div class="voice"><b>Root</b><span>${LINES.value(sc)}</span></div>
-        <div class="voice"><b>Sky</b><span>${LINES.risk(sc)}</span></div>
-        <div class="voice chief"><b>Gus</b><span>the commune says <b style="color:var(--amber)">${sig.t}</b> for now.</span></div>
+        <div class="voice"><b>Willow</b><span>${vc.momentum}</span></div>
+        <div class="voice"><b>Sunny</b><span>${vc.sentiment}</span></div>
+        <div class="voice"><b>Root</b><span>${vc.value}</span></div>
+        <div class="voice"><b>Sky</b><span>${vc.risk}</span></div>
+        <div class="voice chief"><b>Gus</b><span>${gus}</span></div>
       </div>
     </div>`;
   }).join('');
@@ -480,7 +527,7 @@ function tick(){const d=new Date();document.getElementById('clock').textContent=
   d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});}
 setInterval(tick,1000);tick();
 setInterval(()=>{if(document.getElementById('s-watch').classList.contains('active'))renderList();},20000);
-setInterval(refreshLive,30000);
+setInterval(refreshLive,60000);
 
 /* ---------- boot ---------- */
 updateStatus();
